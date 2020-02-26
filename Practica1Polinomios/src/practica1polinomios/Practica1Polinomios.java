@@ -5,6 +5,7 @@
  */
 
 package practica1polinomios;
+import java.util.Scanner;
 
 /** Entrega 6 de Marzo
  * 
@@ -26,12 +27,78 @@ public class Practica1Polinomios {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
-        String sCadena = "-3-x^2+45x^4-x";       //String a convertir
+        PolvF1 p1;
+        menu();
+    }//main
+    
+    public static void menu(){
+        System.out.flush();
+        System.out.println("\n-----------------MENÚ-------------------");
+        System.out.println("(0) * Ingresar Polinomio");
+        System.out.println("(1) * Mostrar Polinomio (Vector - Lista)");
+        System.out.println("(2) * Armar polinomio");
+        System.out.println("(3) * Insertar término");
+        System.out.println("(4) * Eliminar término");
+        System.out.println("(5) * Evaluar");
+        System.out.println("(6) * +, *, / ");
+        System.out.println("(7) * F1 + F2 = F3 ");
+        System.out.println("(8) * Salir ");
+        System.out.println("----------------------------------------\n");
+        System.out.print("Ingrese una opción (0-7) -> ");
+        Scanner ingreso = new Scanner (System.in);
+        opciones(ingreso.nextLine());
+    }
+    
+    public static void opciones(String o){
+        if(isNumeric(o)){
+            int n = Integer.parseInt(o);
+            switch (n){
+                case 0:
+                    System.out.println("Ingrese el polinomio: ");
+                    Scanner ingreso = new Scanner (System.in);
+                    castString(ingreso.nextLine());
+                    break;
+                case 1:
+                    print(p1);
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    break;
+                case 8:
+                    System.exit(0);
+                default:
+                    System.out.println("Ingreso no válido");
+                    menu();
+            }
+        }else{
+            System.out.println("Ingreso no válido");
+            menu();
+        }
+    }
+    
+    public static boolean isNumeric(String s){
+        for (int i = 0; i < s.length(); i++){
+            if( !Character.isDigit(s.charAt(i)) )
+                return false;
+        }
+        return true;            
+    }
+    
+    public static int[] castString(String sCadena){
+        //String sCadena = "-3-x^2+45x^4-x";     //String a convertir
         char aCaracteres[];                    //Instancia de vector de caracteres
         aCaracteres = sCadena.toCharArray();    //Conversión de cadena a arreglo de caracteres
         
-        int vectorOrganizador[] = new int[10];  //Vector transitorio de enteros para organizar
+        int vectorOrganizador[] = new int[sCadena.length()];  //Vector transitorio de enteros para organizar
         String sGuardar = "";                   //String para guardar dígitos mayores a un caracter
         int b = 0;                              //Incremento para controlar los datos útiles
         
@@ -107,23 +174,35 @@ public class Practica1Polinomios {
         for (int x = 0; x < b; x++)
             System.out.print(vectorOrganizador[x] + "  ");
         
-        System.out.println("");
-        
-        //Crear vector en FORMA 1 
-        int vec[] = new int[b + 2]; //vector en forma 1
-        int g = 0;//Grado del constructor
-        for(int x = 1; x < vectorOrganizador.length; x = x + 2){ //Posicioines impares
-            if (vectorOrganizador[x] > g)
-                g = vectorOrganizador[x];
+        return vectorOrganizador;
+    }// fin castString
+    
+    public static void vecToShapes(int[] vec){
+        //capturar el grado del polinomio
+        int grade = 0;
+        for(int i = 1; i <= vec.length; i = i + 2){
+            if (vec[i] > grade){
+                grade = vec[i];
+            }
+            i++;
         }
-        
-        vec[0] = g; //Grado del vector
-        for(int x = 1; x < b; x = x + 2) //Posicioines impares
-            vec[vec[0] + 1 - vectorOrganizador[x]] = vectorOrganizador[x - 1];
+        //Crear vector en FORMA 1
+        PolvF1 p1 = new PolvF1(grade); //vector en forma 1
+        for(int x = 1; x <= p1.vec[0] + 2; x = x+ 2){ //Posicioines impares
+            p1.vec[grade + 1 - vec[x]] = vec[x - 1];
+        }
+    }
+    
+    public static void print(PolvF1 p1){
         
         //Imprimir vector en F1
-        for (int x = 0; x < vec[0] + 2; x++)//Imprimir vector organizador
-            System.out.print(vec[x] + "  ");
+        System.out.println("El vector en forma 1 queda: ");
+        for(int i = 0; i < p1.vec[0] + 2; i++){
+            System.out.print(p1.vec[0] + " ");
+        }
+        
+//        for (int x = 0; x < p1.vec[0] + 2; x++)//Imprimir vector organizador
+//            System.out.print(p1.vec[x] + "  ");
         
         System.out.println("");
         
@@ -131,19 +210,19 @@ public class Practica1Polinomios {
         
         String sImprVec = "";
         
-        if(vec[0] > 1){
-            sImprVec = sImprVec + vec[1] + "x^" + vec[0];
+        if(p1.vec[0] > 1){
+            sImprVec = sImprVec + p1.vec[0] + "x^" + p1.vec[0];
         }
         
-        for(int k = 2; k < vec[0]; k++){
-            if(vec[k] != 0){
-                if(vec[k] > 1){
-                    sImprVec = sImprVec + "+" + vec[k] + "x^" + (vec[0] + 1 - k);
-                }else{
-                    sImprVec = sImprVec + vec[k] + "x^" + (vec[0] + 1 - k);
-                }
-            }
-        }
-        
+//        for(int k = 2; k < vec[0]; k++){
+//            if(vec[k] != 0){
+//                if(vec[k] > 1){
+//                    sImprVec = sImprVec + "+" + vec[k] + "x^" + (vec[0] + 1 - k);
+//                }else{
+//                    sImprVec = sImprVec + vec[k] + "x^" + (vec[0] + 1 - k);
+//                }
+//            }
+//        }
     }
+    
 }
