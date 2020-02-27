@@ -23,16 +23,16 @@ import java.util.Scanner;
  */
 public class Practica1Polinomios {
 
+    private static PolvF1 p1;
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        PolvF1 p1;
         menu();
     }//main
     
     public static void menu(){
-        System.out.flush();
         System.out.println("\n-----------------MENÚ-------------------");
         System.out.println("(0) * Ingresar Polinomio");
         System.out.println("(1) * Mostrar Polinomio (Vector - Lista)");
@@ -94,15 +94,14 @@ public class Practica1Polinomios {
     }
     
     public static int[] castString(String sCadena){
-        //String sCadena = "-3-x^2+45x^4-x";     //String a convertir
+        //String sCadena = "-3-x^2+45x^4-x";    //String a convertir
         char aCaracteres[];                    //Instancia de vector de caracteres
         aCaracteres = sCadena.toCharArray();    //Conversión de cadena a arreglo de caracteres
         
         int vectorOrganizador[] = new int[sCadena.length()];  //Vector transitorio de enteros para organizar
+        int vectorIntFinal[];
         String sGuardar = "";                   //String para guardar dígitos mayores a un caracter
         int b = 0;                              //Incremento para controlar los datos útiles
-        
-        //int vec[];                              //Vector en forma 1
         
         for (int x = 0; x < aCaracteres.length; x++){ //Ciclo para leer el arreglo de caracteres
             
@@ -148,7 +147,7 @@ public class Practica1Polinomios {
                         b = b + 2; //Guarda posición de datos útiles
                     }else{
                         b++; //Guarda posición de datos útiles
-                    }              
+                    }          
                 }
             }
 
@@ -170,49 +169,47 @@ public class Practica1Polinomios {
             }
         }//cierre for
         
+        vectorIntFinal = new int[b];
         //Imprimir vector organizador
-        for (int x = 0; x < b; x++)
-            System.out.print(vectorOrganizador[x] + "  ");
-        
-        return vectorOrganizador;
+        System.arraycopy(vectorOrganizador, 0, vectorIntFinal, 0, b);
+            
+        vecToShapes(vectorIntFinal);
+        return vectorIntFinal;
     }// fin castString
     
     public static void vecToShapes(int[] vec){
         //capturar el grado del polinomio
         int grade = 0;
-        for(int i = 1; i <= vec.length; i = i + 2){
+        for(int i = 1; i < vec.length; i = i + 2){
             if (vec[i] > grade){
                 grade = vec[i];
             }
-            i++;
         }
         //Crear vector en FORMA 1
-        PolvF1 p1 = new PolvF1(grade); //vector en forma 1
-        for(int x = 1; x <= p1.vec[0] + 2; x = x+ 2){ //Posicioines impares
+        p1 = new PolvF1(grade); //vector en forma 1
+        for(int x = 1; x < vec.length; x = x + 2){ //Posicioines impares
             p1.vec[grade + 1 - vec[x]] = vec[x - 1];
         }
+        menu();
     }
     
-    public static void print(PolvF1 p1){
+    public static void print(PolvF1 p){
         
         //Imprimir vector en F1
         System.out.println("El vector en forma 1 queda: ");
-        for(int i = 0; i < p1.vec[0] + 2; i++){
-            System.out.print(p1.vec[0] + " ");
+        for(int i = 0; i < p.vec[0] + 2; i++){
+            System.out.print(p.vec[i] + " ");
         }
         
-//        for (int x = 0; x < p1.vec[0] + 2; x++)//Imprimir vector organizador
-//            System.out.print(p1.vec[x] + "  ");
-        
-        System.out.println("");
+        menu();
         
         //Imprimir vector normal
         
-        String sImprVec = "";
-        
-        if(p1.vec[0] > 1){
-            sImprVec = sImprVec + p1.vec[0] + "x^" + p1.vec[0];
-        }
+//        String sImprVec = "";
+//        
+//        if(p1.vec[0] > 1){
+//            sImprVec = sImprVec + p1.vec[0] + "x^" + p1.vec[0];
+//        }
         
 //        for(int k = 2; k < vec[0]; k++){
 //            if(vec[k] != 0){
