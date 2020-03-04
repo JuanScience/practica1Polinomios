@@ -97,8 +97,18 @@ public class PolvF1 extends PolinomioVector{
         return termino1;
     }
     
+    //Limpia los datos útiles del vector después de la posición 1
+    public void clean(){
+        for(int i = 1; i < vec.length; i++ )
+            setDato(0, i);
+    }
+    
     public float evaluar(float x){
-        return x;
+        float r = 0;
+        for(int i = 1; i < vec.length; i++){
+            r  = (float) (r + (vec[i] * Math.pow(x,(vec[0] + 1 - i))));
+        }
+        return r;
     }
     
     //Copia el vector en uno con grado superior
@@ -135,8 +145,11 @@ public class PolvF1 extends PolinomioVector{
             }
     }
     
-    public void eliminarTerm(){
-        
+    public void eliminarTerm(int exp){
+        if (exp <= vec[0]){//Si el término a ingresar es menor que el grado del polinomio
+                vec[vec[0] + 1 - exp] = 0;
+                this.ajustar();
+            }
     }
 
     //Reduce el tamaño de vector si hay ceros en los primeros términos del polinomio
@@ -155,34 +168,53 @@ public class PolvF1 extends PolinomioVector{
     
     public PolvF1 sumar (PolvF1 B){
         int k = 1, j = 1, expA, expB, pos, My;
-        if(vec[0] < B.getDato(0)){
-            My = vec[0];
-        }else{
+        if(vec[0] <= B.getDato(0)){ //Calcula el grado del polinomio resutante
             My = B.getDato(0);
+        }else{
+            My = vec[0];
         }
-        PolvF1 R = new PolvF1(My);
-        while ((k < vec[0] + 2) && (j < B.getDato(0) + 2)){
-            expA = vec[0] + 1 - k;
-            expB = B.getDato(0) + 1 - j;
-            if(expA > expB){
-                pos = R.getDato(0) + 1 - expA;
-                R.setDato(vec[k], pos);
-                k++;
+        PolvF1 R = new PolvF1(My); //Crea el polinomio resultante
+        while ((k < vec[0] + 2) && (j < B.getTam() + 2)){ //Recorre ambos vectores
+            expA = vec[0] + 1 - k; //Calcula el exponente del primer sumando
+            expB = B.getDato(0) + 1 - j;//Calcula el exponente del segundo sumando
+            if(expA > expB){//Si el exponente del primer sumando es mayor
+                pos = R.getTam() + 1 - expA;//Calcula la posición del exponente en el nuevo vector
+                R.setDato(vec[k], pos);//Asigna el dato
+                k++;//Incrementa posición del primer sumando
             }else{
-                if(expB > expA){
-                    pos = R.getDato(0) + 1 - expB;
-                    R.setDato(B.getDato(j), pos);
-                    j++;
-                }else{
-                    pos = R.getDato(0) + 1 - expA;
-                    R.setDato(vec[k] + B.getDato(j), pos);
-                    k++;
-                    j++;
+                if(expB > expA){//Si el exponente del segundo sumando es mayor que el primero
+                    pos = R.getTam() + 1 - expB;//Calcula la posición del exponente en el nuevo vector
+                    R.setDato(B.getDato(j), pos);//Asigna el dato
+                    j++;//Incrementa posición del segundo sumando
+                }else{//Si ambos exponetes son iguales
+                    pos = R.getDato(0) + 1 - expA;//Calcula la posición del exponente en el nuevo vector
+                    R.setDato(vec[k] + B.getDato(j), pos);//Asigna el dato
+                    k++;//Incrementa posición del primer sumando
+                    j++;//Incrementa posición del segundo sumando
                 }
             }
         }
         R.ajustar();
         return (R);
+    }
+    
+    //multiplica dos polinomios
+    public PolvF1 multiplicar (PolvF1 B){
+        PolvF1 ps = new PolvF1(B.getTam() + getTam());
+        PolvF1 pr = new PolvF1(B.getTam() + getTam());
+        int dato, pos;
+        for (int i = 1; i < vec.length; i++){
+            for(int j = 1; j < B.vec.length; j++){
+                dato = vec[i] * B.vec[j];
+                pos = ps.getTam() + 1 - ((getTam() + 1 - i) + (B.getTam() + 1 - j));
+                ps.setDato(dato, pos);
+                //ps.setDato(vec[i] * B.vec[j], ps.getTam() + 1 - ((getTam() + 1 - i) + (B.getTam() + 1 - j)));
+            }
+            pr = pr.sumar(ps);
+            ps.clean();
+        }
+        pr.ajustar();
+        return (pr);
     }
     
 }
