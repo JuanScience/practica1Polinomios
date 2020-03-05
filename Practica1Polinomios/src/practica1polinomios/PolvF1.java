@@ -85,24 +85,6 @@ public class PolvF1 extends PolinomioVector{
         }
     }
     
-    public int getDato (int pos){
-        return ((int)vec[pos]);
-    }
-    
-    public void setDato (float dato, int pos){
-        vec[pos] = dato;
-    }
-    
-    public int getTam(){
-        return termino0;
-    }
-    
-    //Limpia los datos útiles del vector después de la posición 1
-    public void clean(){
-        for(int i = 1; i < vec.length; i++ )
-            setDato(0, i);
-    }
-    
     public float evaluar(float x){
         float r = 0;
         for(int i = 1; i < vec.length; i++){
@@ -114,7 +96,6 @@ public class PolvF1 extends PolinomioVector{
     //Copia el vector en otro con grado superior
     public void redimensionar(int exp){
         PolvF1 R = new PolvF1(exp);
-        R.vec[0] = exp;
         for(int i = 1; i < vec.length; i++){
             R.vec[(int)R.vec[0] + 1 - ((int)vec[0] + 1 - i)] = vec[i];
         }
