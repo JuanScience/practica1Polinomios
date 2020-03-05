@@ -5,6 +5,7 @@
  */
 
 package practica1polinomios;
+import static java.lang.Double.parseDouble;
 import java.util.Scanner;
 
 /** Entrega 6 de Marzo
@@ -23,38 +24,39 @@ import java.util.Scanner;
  */
 public class Practica1Polinomios {
 
-    private static PolvF1 p1;
+    //Variables globales
+    private static PolvF1 p1, b1, r1;
+    private static PolvF2 p2, b2, r2;
+    private static final Scanner INGRESO = new Scanner (System.in);
 
-    /**
-     * @param args the command line arguments
-     */
+    //Método principal
     public static void main(String[] args) {      
         menu();
-    }//main
+    }
     
     //menú de opciones
     public static void menu(){
-        System.out.println("\n-----------------MENÚ-------------------");
+        System.out.println("\n\n-----------------MENÚ-------------------");
         System.out.println("(1) * Ingresar Polinomio");
         System.out.println("(2) * Mostrar Polinomio (Vector - Lista)");
         System.out.println("(3) * Armar polinomio");
         System.out.println("(4) * Insertar término");
         System.out.println("(5) * Eliminar término");
         System.out.println("(6) * Evaluar");
-        System.out.println("(7) * +, *, / ");
-        System.out.println("(8) * F1 + F2 = F3 ");
+        System.out.println("(7) * Suma");
+        System.out.println("(8) * Multiplicación");
+        System.out.println("(9) * Dividir");
+        System.out.println("(10)* F1 + F2 = F3 ");
         System.out.println("(0) * Salir ");
         System.out.println("----------------------------------------\n");
         System.out.print("Ingrese una opción (0-7) -> ");
-        Scanner ingreso = new Scanner (System.in);
-        opciones(ingreso.nextLine());
+        opciones(INGRESO.nextLine());
     }
     
     //Vuelve a mostrar el menú
     public static void again(){
-        Scanner waitForKeypress = new Scanner(System.in);
         System.out.print("\n\nPresiona la tecla ENTER para continuar");
-        waitForKeypress.nextLine();
+        INGRESO.nextLine();
         menu();
     }
 
@@ -67,10 +69,10 @@ public class Practica1Polinomios {
                     introduce();
                     again();
                 case 2:
-                    print(p1);
+                    print();
                     again();
                 case 3:
-                    rebuild(p1);
+                    rebuild();
                     again();
                 case 4:
                     insertar();
@@ -79,11 +81,20 @@ public class Practica1Polinomios {
                     terminate();
                     again();
                 case 6:
-                    break;
+                    evaluate();
+                    again();
                 case 7:
-                    break;
+                    plus();
+                    again();
                 case 8:
-                    break;
+                    multiply();
+                    again();
+                case 9:
+                    divide();
+                    again();
+                case 10:
+                    
+                    again();
                 case 0:
                     System.exit(0);
                 default:
@@ -112,19 +123,51 @@ public class Practica1Polinomios {
         return true;
     }
     
-    //Realiza el ingreso de un polinomio
-    public static void introduce(){
-        System.out.print("\nIngrese el polinomio: ");
-        Scanner ingreso = new Scanner (System.in);
-        castString(ingreso.nextLine());
+    //Valida si un número es real
+    public static boolean isFloat(String s){
+        if("".equals(s) || (s == null ? ("\"" + s + "\"") == null : s.equals("\"" + s + "\""))){//Si se envía un enter
+            return false;
+        }
+        if (!Character.isDigit(s.charAt(0)) && s.charAt(0) != '-'){//Si en la primera posición no hay "-" o números
+            return false;
+        }
+        int control = 0;
+        for (int i = 1; i < s.length(); i++){//valida caracter por caracter si es dígito
+            if(!Character.isDigit(s.charAt(i))){
+                if (s.charAt(i) == '.' && control == 0) {
+                    control++;
+                }else{
+                    return false;
+                }
+            }
+        }
+        return true;
     }
     
+    //Valida si hay polinomios creados
+    public static boolean isNotNull(){
+        if(p1 == null){
+            System.out.println("\nIngrese primero un polinomio (Opción 1)");
+            return false;
+        }else
+            return true;
+    }
+    
+    //Realiza el ingreso de un polinomio nuevo
+    public static void introduce(){
+        System.out.print("\nIngrese el polinomio: ");
+        vecToShapesP(castString(INGRESO.nextLine()));//Convierte el vector en las tres formas
+    }
+
     //Convierte el string con un polinomio en un vector de coeficientes y exponentes
+    //validar dos términos con el mismo grado
+    //validar si termina en "^"
+    //validar si tiene otros datos diferentes a x, ^, +, -
+    
+    //Devuelve una cadena de enteros con coeficientes (pares) y exponentes (impares) de un polinomio exp
     public static int[] castString(String sCadena){
-        //String sCadena = "-3-x^2+45x^4-x";    //String a convertir
         char aCaracteres[];                    //Instancia de vector de caracteres
-        aCaracteres = sCadena.toCharArray();    //Conversión de cadena a arreglo de caracteres
-        
+        aCaracteres = sCadena.toCharArray();    //Conversión de cadena a arreglo de caracteres        
         int vectorOrganizador[] = new int[sCadena.length() + 1];  //Vector transitorio de enteros para organizar
         int vectorIntFinal[];
         String sGuardar = "";                   //String para guardar dígitos mayores a un caracter
@@ -198,73 +241,154 @@ public class Practica1Polinomios {
         
         vectorIntFinal = new int[b];//vector para retornar
         System.arraycopy(vectorOrganizador, 0, vectorIntFinal, 0, b);//Copia el vector
-        vecToShapes(vectorIntFinal);//Convierte el vector en las tres formas
         return vectorIntFinal;
     }// fin castString
     
     //Convierte el polinomio a las tres formas
-    public static void vecToShapes(int[] vec){
+    public static void vecToShapesP(int[] vec){
         p1 = PolvF1.toF1(vec);//pasa el vector de enteros a f1
+        p2 = PolvF2.toF2(vec);//pasa el vector de enteros a f1
         System.out.println("Vector ingresado.");
     }
     
     //Imprime el polinomio en cada forma
-    public static void print(PolvF1 p){
-        if(p == null){
-            System.out.println("Ingrese primero un polinomio (Opción 1)");
-        }else{
-            p.printf1();//Imprimir vector en F1  
+    public static void print(){
+        if(isNotNull()){
+            p1.printf1();//Imprimir vector en F1  
+            p2.printf2();//Imprimir vector en F1  
         }
     }
     
     //Desde las tres formas, convierte el polinomio a escritura normal
-    public static void rebuild(PolvF1 p){
-        if(p == null){
-            System.out.println("Ingrese primero un polinomio (Opción 1)");
-        }else{
-            p.mostrarf1();
+    public static void rebuild(){
+        if(isNotNull()){
+            p1.mostrarf1();
+            p2.mostrarf2();
         }
     }
     
     //Inserta un nuevo término al polinomio
     public static void insertar(){
-        if(p1 == null){
-            System.out.println("\nIngrese primero un polinomio (Opción 1)");
-        }else{
+        if(isNotNull()){
             System.out.println("\nIngrese un dato para el coeficiente: ");
-            Scanner ingreso = new Scanner (System.in);
-            String cS = ingreso.nextLine();
-            while(!isNumeric(cS)){
-                System.out.print("\nIngrese un dato válido para el Coeficiente: ");
-                cS = ingreso.nextLine();
+            String cS = INGRESO.nextLine();
+            while(!isNumeric(cS)){//Mientras no sea numérico
+                System.out.print("\nIngrese un dato válido para el coeficiente: ");
+                cS = INGRESO.nextLine();
             }
             System.out.println("\nIngrese un dato para el exponente: ");
-            String eS = ingreso.nextLine();
-            boolean z = false;
-            while(z){
+            String eS = INGRESO.nextLine();
+            boolean z = true;
+            while(z){//Mientras no sea un dato numérico y positivo
                 if(!isNumeric(eS)){
-                    System.out.print("\nIngrese un dato numérico para el Coeficiente: ");
-                    eS = ingreso.nextLine();
+                    System.out.print("\nIngrese un dato numérico para el exponente: ");
+                    eS = INGRESO.nextLine();
                 }else if(Integer.parseInt(eS) < 0){
-                    System.out.print("\nIngrese un dato no negativo para el Coeficiente: ");
-                    eS = ingreso.nextLine();
+                    System.out.print("\nIngrese un dato no negativo para el exponente: ");
+                    eS = INGRESO.nextLine();
                 }else{
-                    z = true;
+                    z = false;
                 }
-            }
-
-            while(!isNumeric(eS)){
-                System.out.print("\nIngrese un dato válido para el Coeficiente: ");
-                eS = ingreso.nextLine();
-            }
-            
+            }            
             p1.insertarTerm(Integer.parseInt(cS), Integer.parseInt(eS));
             System.out.println("Término agregado");
         }
     }
     
+    //Elimina término del polinomio por exponente
     public static void terminate(){
+        if(isNotNull()){
+            System.out.println("\nIngrese un exponente correspondiente al término a eliminar: ");
+            String eS = INGRESO.nextLine();
+            boolean z = true;
+            while(z){//Mientras sea un dato numerico, positivo y menor al grado del polinomio
+                if(!isNumeric(eS)){
+                    System.out.print("\nIngrese un dato numérico para el exponente: ");
+                    eS = INGRESO.nextLine();
+                }else if(Integer.parseInt(eS) < 0){
+                    System.out.print("\nIngrese un dato no negativo para el exponente: ");
+                    eS = INGRESO.nextLine();
+                }else if(Integer.parseInt(eS) > p1.getTam()){
+                    System.out.print("\nIngrese un dato igual o menor al grado del polinomio: ");
+                    eS = INGRESO.nextLine();
+                }else{
+                    z = false;
+                }
+            }
+            int n = Integer.parseInt(eS);
+            p1.eliminarTerm(n);
+            System.out.println("Término eliminado");
+        }
+    }
+    
+    //Evalua el polinomio
+    public static void evaluate(){
+        if(isNotNull()){
+            System.out.print("Ingrese el valor de x: ");
+            String eS = INGRESO.nextLine();
+            if(eS.contains(",")){
+                eS = eS.replace(",", ".").trim();
+            }
+            boolean z = true;
+            while(z){//Mientras sea un float
+                if(!isFloat(eS)){
+                    System.out.print("\nIngrese un número real para el exponente: ");
+                    eS = INGRESO.nextLine();
+                    if(eS.contains(",")){
+                        eS = eS.replace(",", ".").trim(); //Cambia las comas por 
+                    }
+                }else{
+                    z = false;
+                }
+            }
+            float f = Float.parseFloat(eS);
+            System.out.print("Desde la forma 1 el resultado es: ");
+            System.out.println(p1.evaluar(f));
+        }
         
+    }
+    
+    //Convierte el polinomio a las tres formas para operar
+    public static void vecToShapesB(int[] vec){
+        b1 = PolvF1.toF1(vec);//pasa el vector de enteros a f1
+    }
+    
+    //Suma el nuevo polinomio que le ingresen
+    public static void plus(){
+        if(isNotNull()){
+            System.out.print("\nIngrese el polinomio para sumar: ");
+            vecToShapesB(castString(INGRESO.nextLine()));//Convierte el vector en las tres formas
+            r1 = p1.sumar(b1);
+            System.out.print("El polinomio resutante es: ");
+            r1.mostrarf1();
+        }
+        
+    }
+    
+    //Multiplica por el nuevo polinomio que le ingresen
+    public static void multiply(){
+        if(isNotNull()){
+            System.out.print("\nIngrese el polinomio para multiplicar: ");
+            vecToShapesB(castString(INGRESO.nextLine()));//Convierte el vector en las tres formas
+            r1 = p1.multiplicar(b1);
+            System.out.print("\nEl polinomio resutante es: ");
+            r1.mostrarf1();
+        }
+    }
+    
+    //Divide por el polinomio que le ingresen
+    public static void divide(){
+        if(isNotNull()){
+            System.out.print("\nIngrese el polinomio para dividir: ");
+            vecToShapesB(castString(INGRESO.nextLine()));//Convierte el vector en las tres formas
+            if(b1.getTam() <= p1.getTam()){
+                r1 = p1.dividir(b1);
+            System.out.print("\nEl polinomio resutante es: ");
+            r1.mostrarf1();
+            }else
+                System.out.println("El grado del polinomio ingresado no es válido");
+            
+        }
     }
     
 }
