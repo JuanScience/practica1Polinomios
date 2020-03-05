@@ -291,6 +291,7 @@ public class Practica1Polinomios {
                 }
             }            
             p1.insertarTerm(Integer.parseInt(cS), Integer.parseInt(eS));
+            p2.insertarTerm(Integer.parseInt(cS), Integer.parseInt(eS));
             System.out.println("Término agregado");
         }
     }
@@ -344,6 +345,8 @@ public class Practica1Polinomios {
             float f = Float.parseFloat(eS);
             System.out.print("Desde la forma 1 el resultado es: ");
             System.out.println(p1.evaluar(f));
+            System.out.print("Desde la forma 2 el resultado es: ");
+            System.out.println(p2.evaluar(f));
         }
         
     }
