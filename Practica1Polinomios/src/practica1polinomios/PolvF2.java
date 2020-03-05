@@ -92,4 +92,78 @@ public class PolvF2 extends PolinomioVector{
             System.out.print(vec[i] + " ");
         }
     }
+    
+    //Evalúa la variable del polinomio
+    public float evaluar(float x){
+        float r = 0;
+        for(int i = 1; i < vec.length; i = i + 2){
+            r  = (float) (r + (vec[i] * Math.pow(x,(vec[i + 1]))));
+        }
+        return r;
+    }
+    
+    //Verifica si existe un término en el polinomio de un grado determinado
+    public int exists (int exp){
+        int pos = 0;
+        for(int i = 2; i < vec.length; i = i + 2){
+            if(exp == vec[i])
+                pos = i;
+        } 
+        return pos;
+    }
+    
+    //Inserta término, si hay término del mismo grado los suma
+    public void insertarTerm(int coef, int exp){
+        int pos = this.exists(exp);
+        if(pos != 0){
+            vec[pos - 1] = vec[pos - 1] + coef;
+            this.ajustar();
+        }else{
+            this.redimensionar((int)vec[0] + 1, coef, exp);
+        }
+    }
+    
+    //Reduce el tamaño de vector si hay ceros en los primeros términos del polinomio
+    public void ajustar(){
+        int j = 0;
+        for(int k = 1; k < vec.length; k = k + 2){//Cuenta los términos con coeficiente cero
+            if (vec[k] == 0)
+                j++;
+        }
+        if(j != 0){
+            PolvF2 R = new PolvF2((int)vec[0] - j);//Crea el objeto polinomio con el nuevo número de términos
+            int k = 1;
+            for (int i = 1; i < vec.length; i = i + 2) {//copia los datos útiles al nuevo vector
+                if(vec[i] != 0){
+                    R.vec[k] = vec[i];
+                    R.vec[k + 1] = vec[i + 1];
+                    k = k + 2;
+                }
+            }
+            termino0 = termino0 - j;
+            vec = R.vec;//Asigna el nuevo vector al objeto original
+        }
+    }
+    
+    //Copia el vector en otro con grado superior e inserta un nuevo término
+    public void redimensionar(int terms, int coef, int exp){
+        PolvF2 R = new PolvF2(terms);
+        int b = 1;
+        boolean z = true;
+        for(int i = 1; i < R.vec.length; i = i + 2){
+            if(vec[b + 1] < exp && z){
+                R.vec[i] = coef;
+                R.vec[i + 1] = exp;
+                z = false;
+            }else{
+                R.vec[i] = vec[b];
+                R.vec[i + 1] = vec[b + 1];
+                b = b + 2;
+            }
+        }
+        termino0 = R.termino0;
+        vec = R.vec;
+    }
+    
+
 }
