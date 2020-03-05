@@ -10,6 +10,6 @@ package practica1polinomios;
  */
 public class PolinomioVector {
     //Declaración de atributos
-    protected int termino1; //Grado o el número de términos
-    protected int[] vec; //Vector
+    protected int termino0; //Grado o el número de términos
+    protected float[] vec; //Vector
 }
