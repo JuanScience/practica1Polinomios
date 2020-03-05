@@ -6,15 +6,15 @@
 package practica1polinomios;
 
 /**
- * Clase polinomio en forma 1
+ * Objeto polinomio en forma 1
  */
 public class PolvF1 extends PolinomioVector{
     
     //Constructor
-    public PolvF1 (int grado){
-        this.termino1 = grado;
-        this.vec = new float[grado + 2];
-        vec[0] = grado;
+    public PolvF1 (int grade){
+        this.termino0 = grade;
+        this.vec = new float[grade + 2];
+        vec[0] = grade;
     }
     
     //Métodos
@@ -80,7 +80,7 @@ public class PolvF1 extends PolinomioVector{
     //Imprime el polinomio en forma 1
     public void printf1(){
         System.out.println("\nEl vector en forma 1 queda: ");
-        for(int i = 0; i < vec[0] + 2; i++){
+        for(int i = 0; i < vec.length; i++){
             System.out.print(vec[i] + " ");
         }
     }
@@ -94,7 +94,7 @@ public class PolvF1 extends PolinomioVector{
     }
     
     public int getTam(){
-        return termino1;
+        return termino0;
     }
     
     //Limpia los datos útiles del vector después de la posición 1
@@ -118,7 +118,7 @@ public class PolvF1 extends PolinomioVector{
         for(int i = 1; i < vec.length; i++){
             R.vec[(int)R.vec[0] + 1 - ((int)vec[0] + 1 - i)] = vec[i];
         }
-        termino1 = R.termino1;
+        termino0 = R.termino0;
         vec = R.vec;
     }
     
@@ -163,7 +163,7 @@ public class PolvF1 extends PolinomioVector{
         for (int i = 1; i < R.vec.length; i++) {//copia los datos útiles al nuevo vector
             R.vec[i] = vec[(int)vec[0] + 1 - ((int)R.vec[0] + 1 - i)];
         }
-        termino1 = j;
+        termino0 = j;
         vec = R.vec;//Asigna el nuevo vector al objeto original
     }
     
