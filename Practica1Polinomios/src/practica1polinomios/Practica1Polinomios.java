@@ -27,6 +27,7 @@ public class Practica1Polinomios {
     //Variables globales
     private static PolvF1 p1, b1, r1;
     private static PolvF2 p2, b2, r2;
+    private static PolvF3 p3, b3, r3;
     private static final Scanner INGRESO = new Scanner (System.in);
 
     //Método principal
@@ -93,7 +94,7 @@ public class Practica1Polinomios {
                     divide();
                     again();
                 case 10:
-                    
+                    allInOne();
                     again();
                 case 0:
                     System.exit(0);
@@ -247,7 +248,8 @@ public class Practica1Polinomios {
     //Convierte el polinomio a las tres formas
     public static void vecToShapesP(int[] vec){
         p1 = PolvF1.toF1(vec);//pasa el vector de enteros a f1
-        p2 = PolvF2.toF2(vec);//pasa el vector de enteros a f1
+        p2 = PolvF2.toF2(vec);//pasa el vector de enteros a f2
+        p3 = PolvF3.toF3(vec);//pasa el vector de enteros a f3
         System.out.println("Vector ingresado.");
     }
     
@@ -255,7 +257,8 @@ public class Practica1Polinomios {
     public static void print(){
         if(isNotNull()){
             p1.printf1();//Imprimir vector en F1  
-            p2.printf2();//Imprimir vector en F1  
+            p2.printf2();//Imprimir vector en F2 
+            p3.printf3();//Imprimir vector en F3
         }
     }
     
@@ -264,6 +267,7 @@ public class Practica1Polinomios {
         if(isNotNull()){
             p1.mostrarf1();
             p2.mostrarf2();
+            p3.mostrarf3();
         }
     }
     
@@ -292,6 +296,7 @@ public class Practica1Polinomios {
             }            
             p1.insertarTerm(Integer.parseInt(cS), Integer.parseInt(eS));
             p2.insertarTerm(Integer.parseInt(cS), Integer.parseInt(eS));
+            p3.insertarTerm(Integer.parseInt(cS), Integer.parseInt(eS));
             System.out.println("Término agregado");
         }
     }
@@ -318,6 +323,8 @@ public class Practica1Polinomios {
             }
             int n = Integer.parseInt(eS);
             p1.eliminarTerm(n);
+            p2.eliminarTerm(n);
+            p3.eliminarTerm(n);
             System.out.println("Término eliminado");
         }
     }
@@ -347,13 +354,16 @@ public class Practica1Polinomios {
             System.out.println(p1.evaluar(f));
             System.out.print("Desde la forma 2 el resultado es: ");
             System.out.println(p2.evaluar(f));
+            System.out.print("Desde la forma 3 el resultado es: ");
+            System.out.println(p3.evaluar(f));
         }
-        
     }
     
     //Convierte el polinomio a las tres formas para operar
     public static void vecToShapesB(int[] vec){
         b1 = PolvF1.toF1(vec);//pasa el vector de enteros a f1
+        b2 = PolvF2.toF2(vec);//pasa el vector de enteros a f2
+        b3 = PolvF3.toF3(vec);//pasa el vector de enteros a f3
     }
     
     //Suma el nuevo polinomio que le ingresen
@@ -362,8 +372,11 @@ public class Practica1Polinomios {
             System.out.print("\nIngrese el polinomio para sumar: ");
             vecToShapesB(castString(INGRESO.nextLine()));//Convierte el vector en las tres formas
             r1 = p1.sumar(b1);
-            System.out.print("El polinomio resutante es: ");
+            r2 = p2.sumar(b2);
+            r3 = p3.sumar(b3);
             r1.mostrarf1();
+            r2.mostrarf2();
+            r3.mostrarf3();
         }
         
     }
@@ -374,8 +387,11 @@ public class Practica1Polinomios {
             System.out.print("\nIngrese el polinomio para multiplicar: ");
             vecToShapesB(castString(INGRESO.nextLine()));//Convierte el vector en las tres formas
             r1 = p1.multiplicar(b1);
-            System.out.print("\nEl polinomio resutante es: ");
+            r2 = p2.multiplicar(b2);
+            r3 = p3.multiplicar(b3);
             r1.mostrarf1();
+            r2.mostrarf2();
+            r3.mostrarf3();
         }
     }
     
@@ -386,12 +402,24 @@ public class Practica1Polinomios {
             vecToShapesB(castString(INGRESO.nextLine()));//Convierte el vector en las tres formas
             if(b1.getTam() <= p1.getTam()){
                 r1 = p1.dividir(b1);
+                r2 = p2.dividir(b2);
+                r3 = p3.dividir(b3);
             System.out.print("\nEl polinomio resutante es: ");
             r1.mostrarf1();
+            r2.mostrarf2();
+            r3.mostrarf3();
             }else
                 System.out.println("El grado del polinomio ingresado no es válido");
             
         }
     }
     
+    public static void allInOne(){
+        if(isNotNull()){
+            System.out.print("\nIngrese el polinomio para sumar: ");
+            vecToShapesB(castString(INGRESO.nextLine()));//Convierte el vector en las tres formas
+            r3 = p1.sumarF1F2(b2);
+            r3.mostrarf3();
+        }
+    }    
 }
