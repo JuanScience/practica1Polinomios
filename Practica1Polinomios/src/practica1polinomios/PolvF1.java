@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package practica1polinomios;
-
 /**
  * Objeto polinomio en forma 1
  */
@@ -201,7 +200,7 @@ public class PolvF1 extends PolinomioVector{
     }
     
     //OJO EVALUAR DIVISIÓN POR CERO
-    //multiplica dos polinomios
+    //divide dos polinomios
     public PolvF1 dividir (PolvF1 B){
         PolvF1 cociente = new PolvF1(getTam() - B.getTam());
         PolvF1 aux = new PolvF1(getTam());
@@ -226,6 +225,26 @@ public class PolvF1 extends PolinomioVector{
         return(cociente);
     }
     
+    public PolvF3 sumarF1F2(PolvF2 x){
+        PolvF3 R = new PolvF3();
+        int j = 1;
+        for(int i = 1; i < vec.length; i++){ //Recorre el vector F1
+            if((int)vec[0] + 1 - i > x.vec[j + 1]){//Si el termino de F1 > F2
+                R.almacenarTerm(vec[i], (int) vec[0] + 1 - i);//Inserta término de F1
+            }else if((int)vec[0] + 1 - i == x.vec[j + 1]){//Si el termino de F1 == F2
+                R.almacenarTerm(vec[i] + x.vec[j], (int) vec[0] + 1 - i);//Suma ambos términos de F1 y F2
+                j = j + 2;
+            }else{
+                R.almacenarTerm(x.vec[j], (int) x.vec[j + 1]);//Inserta término de F2
+                j = j + 2;
+            }
+        }
+        while((j < x.vec.length)){ //Termina de sumar si quedan términos en el segundo sumando
+            R.almacenarTerm(x.vec[j], (int) x.vec[j + 1]);//Inserta término de F2
+                j = j + 2;
+        }
+        return R;
+    }
     
     
 }
